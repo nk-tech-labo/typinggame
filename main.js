@@ -109,5 +109,7 @@ inputEl.addEventListener('input', e => {
   }
 });
 
-document.getElementById('start').addEventListener('click', start);
-document.getElementById('restart').addEventListener('click', start);
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('start').addEventListener('click', start);
+  document.getElementById('restart').addEventListener('click', start);
+});
