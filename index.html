@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>日本語タイピングゲーム</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <h1>日本語タイピングゲーム</h1>
+  <div>
+    <label for="mode">モード:</label>
+    <select id="mode">
+      <option value="full">全文入力モード</option>
+      <option value="time">制限時間モード (30秒)</option>
+    </select>
+    <button id="start">スタート</button>
+  </div>
+  <div id="display" class="hidden">
+    <p id="japanese"></p>
+    <p id="roman"></p>
+    <div id="stats">
+      <span id="timer">00:00</span>
+      <span id="counter"></span>
+    </div>
+    <input id="input" autocomplete="off" autofocus />
+  </div>
+  <div id="result" class="hidden">
+    <h2>結果</h2>
+    <p id="score"></p>
+    <button id="restart">もう一度</button>
+  </div>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
