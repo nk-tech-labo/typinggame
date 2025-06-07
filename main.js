@@ -5,6 +5,10 @@ const sentences = [
   { jp: '猫が好きです。', rom: 'neko ga suki desu.' },
 ];
 
+let romanFull = '';
+let romanClean = '';
+let mapTypedToFull = [];
+let mapFullToTyped = [];
 let current = '';
 let mode = 'full';
 let index = 0;
@@ -31,6 +35,13 @@ function formatTime(ms) {
 }
 
 function updateDisplay() {
+  const typed = inputEl.value.replace(/\s+/g, '');
+  let html = '';
+  for (let i = 0; i < romanFull.length; i++) {
+    const ch = romanFull[i];
+    const tIdx = mapFullToTyped[i];
+    if (tIdx !== -1 && tIdx < typed.length) {
+      html += `<span class="${typed[tIdx] === romanClean[tIdx] ? 'correct' : 'incorrect'}">${ch}</span>`;
   let html = '';
   for (let i = 0; i < current.length; i++) {
     const ch = current[i];
@@ -41,7 +52,7 @@ function updateDisplay() {
     }
   }
   romanEl.innerHTML = html;
-  counterEl.textContent = `${index}/${current.length}`;
+  counterEl.textContent = `${index}/${romanClean.length}`;
 }
 
 function beep() {
@@ -77,6 +88,23 @@ function checkTime() {
 function start() {
   mode = modeEl.value;
   const s = sentences[Math.floor(Math.random() * sentences.length)];
+  romanFull = s.rom;
+  romanClean = romanFull.replace(/\s+/g, '');
+  mapTypedToFull = [];
+  mapFullToTyped = [];
+  let t = 0;
+  for (let i = 0; i < romanFull.length; i++) {
+    if (romanFull[i] !== ' ') {
+      mapTypedToFull.push(i);
+      mapFullToTyped[i] = t++;
+    } else {
+      mapFullToTyped[i] = -1;
+    }
+  }
+  japaneseEl.textContent = s.jp;
+  index = 0;
+  correct = 0;
+  total = romanClean.length;
   current = s.rom;
   japaneseEl.textContent = s.jp;
   index = 0;
@@ -94,6 +122,18 @@ function start() {
 }
 
 inputEl.addEventListener('input', e => {
+  const typed = e.target.value.replace(/\s+/g, '');
+  while (index < typed.length) {
+    const char = typed[index];
+    if (char === romanClean[index]) {
+      correct++;
+    } else {
+      beep();
+    }
+    index++;
+  }
+  updateDisplay();
+  if (index >= romanClean.length && mode === 'full') {
   const val = e.target.value;
   const char = val[index];
   if (!char) return;
@@ -109,5 +149,9 @@ inputEl.addEventListener('input', e => {
   }
 });
 
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('start').addEventListener('click', start);
+  document.getElementById('restart').addEventListener('click', start);
+});
 document.getElementById('start').addEventListener('click', start);
 document.getElementById('restart').addEventListener('click', start);
