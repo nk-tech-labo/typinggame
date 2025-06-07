@@ -9,6 +9,7 @@ let romanFull = '';
 let romanClean = '';
 let mapTypedToFull = [];
 let mapFullToTyped = [];
+let current = '';
 let mode = 'full';
 let index = 0;
 let startTime = 0;
@@ -41,6 +42,11 @@ function updateDisplay() {
     const tIdx = mapFullToTyped[i];
     if (tIdx !== -1 && tIdx < typed.length) {
       html += `<span class="${typed[tIdx] === romanClean[tIdx] ? 'correct' : 'incorrect'}">${ch}</span>`;
+  let html = '';
+  for (let i = 0; i < current.length; i++) {
+    const ch = current[i];
+    if (i < index) {
+      html += `<span class="${inputEl.value[i] === ch ? 'correct' : 'incorrect'}">${ch}</span>`;
     } else {
       html += `<span>${ch}</span>`;
     }
@@ -99,6 +105,11 @@ function start() {
   index = 0;
   correct = 0;
   total = romanClean.length;
+  current = s.rom;
+  japaneseEl.textContent = s.jp;
+  index = 0;
+  correct = 0;
+  total = current.length;
   inputEl.value = '';
   inputEl.disabled = false;
   displayEl.classList.remove('hidden');
@@ -123,6 +134,17 @@ inputEl.addEventListener('input', e => {
   }
   updateDisplay();
   if (index >= romanClean.length && mode === 'full') {
+  const val = e.target.value;
+  const char = val[index];
+  if (!char) return;
+  if (char === current[index]) {
+    correct++;
+  } else {
+    beep();
+  }
+  index++;
+  updateDisplay();
+  if (index >= current.length && mode === 'full') {
     finish();
   }
 });
@@ -131,3 +153,5 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('start').addEventListener('click', start);
   document.getElementById('restart').addEventListener('click', start);
 });
+document.getElementById('start').addEventListener('click', start);
+document.getElementById('restart').addEventListener('click', start);
